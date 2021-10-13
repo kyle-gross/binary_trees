@@ -21,7 +21,13 @@ int find_depth(const binary_tree_t *node)
 }
 
 /**
+ * perfect - recursively check tree for perfection
  *
+ * @tree: the tree to check
+ * @d: depth of leftmost node
+ * @level: level of tree
+ *
+ * Return: 1 if perfect, 0 if not
  */
 int perfect(const binary_tree_t *tree, int d, int level)
 {
