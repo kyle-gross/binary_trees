@@ -1,61 +1,41 @@
 #include "binary_trees.h"
 
 /**
- * binary_tree_height - measures the height of a binary tree
+ * find_depth - fints depth of leftmost leaf
  *
- * @tree: the node to measure from
+ * @node: the node to measure from
  *
- * Return: length of tree, or 0 if tree is NULL
+ * Return: depth of leftmost leaf
  */
-size_t binary_tree_height(const binary_tree_t *tree)
+int find_depth(const binary_tree_t *node)
 {
-	size_t rHeight, lHeight;
+	int d = 0;
 
-	if (!tree)
-		return (0);
+	while (node)
+	{
+		d++;
+		node = node->left;
+	}
 
-	rHeight = 1 + binary_tree_height(tree->right);
-	lHeight = 1 + binary_tree_height(tree->left);
-
-	if (rHeight > lHeight)
-		return (rHeight);
-	return (lHeight);
+	return (d);
 }
 
 /**
- * binary_tree_balance - measures the balance factor of a binary tree
  *
- * @tree: ptr to root node of tree
- *
- * Return: balance, or 0 if tree is NULL
  */
-int binary_tree_balance(const binary_tree_t *tree)
+int perfect(const binary_tree_t *tree, int d, int level)
 {
 	if (!tree)
-		return (0);
-
-	return (binary_tree_height(tree->left) - binary_tree_height(tree->right));
-}
-
-/**
- * binary_tree_is_full - checks if a binary tree is full
- *
- * @tree: ptr to root node
- *
- * Return: 1 if full, 0 if not full or tree is NULL
- */
-int binary_tree_is_full(const binary_tree_t *tree)
-{
-	if (!tree)
-		return (0);
-
-	if (!tree->left && !tree->right)
 		return (1);
 
-	if (tree->left && tree->right)
-		return (binary_tree_is_full(tree->left) && binary_tree_is_full(tree->right));
+	if (!tree->left && !tree->right)
+		return (d == (level + 1));
 
-	return (0);
+	if (!tree->left || !tree->right)
+		return (0);
+
+	return (perfect(tree->left, d, level + 1) &&
+			perfect(tree->right, d, level + 1));
 }
 
 /**
@@ -67,11 +47,15 @@ int binary_tree_is_full(const binary_tree_t *tree)
  */
 int binary_tree_is_perfect(const binary_tree_t *tree)
 {
+	int d;
+
 	if (!tree)
 		return (0);
 
-	if (binary_tree_balance(tree))
-		return (0);
+	d = find_depth(tree);
 
-	return (binary_tree_is_perfect(tree->left) * binary_tree_is_perfect(tree->right));
+	if (perfect(tree, d, 0))
+		return (1);
+
+	return (0);
 }
